@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee</title>
+
+    <!-- SWIPER -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+
+    <!-- Font Awesome CDN Link  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Custom CSS File Link  -->
+    <!-- <link rel="stylesheet" href="css/style.css"> -->
+
+<style>
+   
+        .dialog-box, .unique-modal-dialog, .logged-in-modal-dialog, .reset-password-modal-dialog {
+            display: none; /* Initially hidden for all */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Overlay */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Ensure it's on top */
+        }
+
+
+        /* Dialog content style */
+        .dialog-box > div, .unique-modal-content, .logged-in-modal-content, .reset-password-modal-content {
+            background-color: white; /* Dialog background */
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 300px; /* Default width for dialogs */
+        }
+
+        /* Close button styling */
+        .dialog-box .close-btn, .unique-close-btn, .reset-password-close-btn, .logged-in-close-btn {
+            cursor: pointer;
+            float: right;
+            font-size: 20px; /* Set the font size for close buttons */
+        }
+
+        /* Headings and form elements */
+        .dialog-box h2, .unique-modal-content h2, .reset-password-modal-content h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px; /* Increase padding for larger input fields */
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px; /* Increase input text size */
+        }
+
+        /* Button styles */
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 12px; /* Adjust padding for smaller buttons */
+            border-radius: 5px;
+            cursor: pointer;
+            width: auto; /* Set width to auto to fit content */
+            max-width: 100%; /* Prevent overflow */
+            text-align: center; /* Center text */
+            font-size: 14px; /* Ensure button text is readable */
+            white-space: nowrap; /* Prevent text from wrapping */
+            overflow: hidden; /* Hide overflow */
+            text-overflow: ellipsis; /* Add ellipsis for overflow text */
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Specific styles for reset password modal */
+        .reset-password-modal-content {
+            width: 400px; /* Adjust width for reset password dialog */
+        }
+        
+        /* Main Styles */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600&display=swap');
+
+        :root {
+            --main-color: #443;
+            --border-radius: 95% 4% 97% 5% / 4% 94% 3% 95%;
+            --border-radius-hover: 4% 95% 6% 95% / 95% 4% 92% 5%;
+            --border: .2rem solid var(--main-color);
+            --border-hover: .2rem dashed var(--main-color);
+        }
+
+        * {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            outline: none;
+            border: none;
+            text-decoration: none;
+            text-transform: capitalize;
+            transition: all .2s linear;
+        }
+
+        html {
+            font-size: 62.5%;
+            overflow-x: hidden;
+            scroll-padding-top: 7rem;
+            scroll-behavior: smooth;
+        }
+
+        section {
+            padding: 2rem 9%;
+        }
+
+        .heading {
+            font-size: 9rem;
+            text-transform: uppercase;
+            color: transparent;
+            -webkit-text-stroke: .05rem var(--main-color);
+            letter-spacing: .2rem;
+            text-align: center;
+            pointer-events: none;
+            position: relative;
+        }
+
+        .heading span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            color: var(--main-color);
+            font-size: 3rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: .9rem 1.5rem;
+            border: var(--border);
+            border-radius: var(--border-radius);
+            color: var(--main-color);
+            background: none;
+            cursor: pointer;
+            margin-top: 1rem;
+            font-size: 1.7rem;
+        }
+
+        .btn:hover {
+            border-radius: var(--border-radius-hover);
+            border: var(--border-hover);
+        }
+
+        /* HEADER */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            background: #fff;
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1);
+            padding: 2rem 9%;
+        }
+
+        .header .logo {
+            color: var(--main-color);
+            font-size: 2.3rem;
+        }
+
+        .header .logo i {
+            padding-left: .5rem;
+        }
+
+        .header .navbar a {
+            margin: 0 1rem;
+            font-size: 1.7rem;
+            color: var(--main-color);
+        }
+
+        .header .btn {
+            margin-top: 0;
+        }
+
+        #menu-btn {
+            font-size: 3rem;
+            color: var(--main-color);
+            cursor: pointer;
+            display: none;
+        }
+
+        /* HOME */
+        .home-h {
+            min-height: 100vh;
+            padding-top: 12rem;
+            background-color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .row-h {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+        }
+
+        .cube-animation-container {
+            width: 200px;
+            height: 200px;
+            perspective: 800px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 2rem;
+        }
+
+        .cube {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateCube 2.5s linear infinite;
+            box-shadow: none;
+        }
+
+        .face {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: #b3e0ff;
+            border: 1.5px solid #8fd3f4;
+            box-shadow: none;
+            opacity: 0.97;
+        }
+
+        .front  { transform: rotateY(0deg) translateZ(50px); }
+        .back   { transform: rotateY(180deg) translateZ(50px); }
+        .right  { transform: rotateY(90deg) translateZ(50px); }
+        .left   { transform: rotateY(-90deg) translateZ(50px); }
+        .top    { transform: rotateX(90deg) translateZ(50px); }
+        .bottom { transform: rotateX(-90deg) translateZ(50px); }
+
+        @keyframes rotateCube {
+            0%   { transform: rotateX(0deg) rotateY(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        .content-h {
+            flex: 1;
+            text-align: right;
+            padding-right: 2rem;
+        }
+
+        .content-h h3 {
+            font-size: 6.5rem;
+            color: var(--main-color);
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .bid-text {
+            color: #ff0000 !important;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* FOOTER */
+        .footer .box-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(23rem, 1fr));
+            gap: 1.5rem;
+        }
+
+        .footer .box-container .box h3 {
+            font-size: 2.5rem;
+            padding: 1rem 0;
+            color: var(--main-color);
+        }
+
+        .footer .box-container .box a {
+            display: block;
+            font-size: 1.5rem;
+            padding: 1rem 0;
+            color: var(--main-color);
+        }
+
+        .footer .box-container .box a i {
+            padding-right: .5rem;
+        }
+
+        .footer .box-container .box a:hover i {
+            padding-right: 2rem;
+        }
+
+        .footer .box-container .box a:hover {
+            padding-right: 2rem;
+        }
+
+        .footer .credit {
+            text-align: center;
+            font-size: 2rem;
+            padding: 2rem 1rem;
+            margin-top: 1rem;
+            color: var(--main-color);
+        }
+
+        .footer .credit span {
+            border-bottom: var(--border-hover);
+        }
+
+        /* MEDIA QUERIES */
+        @media (max-width: 991px) {
+            html {
+                font-size: 55%;
+            }
+
+            .header {
+                padding: 3rem;
+            }
+
+            section {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .heading {
+                font-size: 6rem;
+            }
+
+            .heading span {
+                font-size: 2.3rem;
+            }
+
+            #menu-btn {
+                display: initial;
+            }
+
+            #menu-btn.fa-times {
+                transform: rotate(180deg);
+            }
+
+            .header .navbar {
+                position: absolute;
+                top: 99%;
+                left: 0;
+                right: 0;
+                background: #fff;
+                clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+            }
+
+            .header .navbar.active {
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            }
+
+            .header .navbar a {
+                display: block;
+                font-size: 2.2rem;
+                margin: 0;
+                padding: 1.5rem 2rem;
+            }
+
+            .row-h {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .cube-animation-container {
+                margin-right: 0;
+                margin-bottom: 2rem;
+            }
+            
+            .content-h {
+                text-align: center;
+                padding-right: 0;
+            }
+
+            .content-h h3 {
+                font-size: 4rem;
+            }
+        }
+
+        @media (max-width: 450px) {
+            html {
+                font-size: 50%;
+            }
+        }
+
+        .main-section { display: none; }
+        .main-section.active { display: block; }
+
+        /* Product Form Styles */
+        #addProductForm {
+            border: none;
+            background: none;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 0;
+            margin: 4rem 0 2rem 0; /* top margin for header, no left/right auto */
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 2rem;
+            align-items: flex-end;
+            justify-content: flex-start;
+            max-width: 100vw;
+        }
+        #addProductForm .form-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 220px;
+            flex: 1 1 260px;
+            margin-bottom: 0;
+        }
+        #addProductForm label {
+            font-size: 1.7rem;
+            color: #222;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        #addProductForm input[type="text"],
+        #addProductForm input[type="number"],
+        #addProductForm input[type="datetime-local"],
+        #addProductForm input[type="file"],
+        #addProductForm textarea,
+        #addProductForm select {
+            font-size: 1.7rem;
+            padding: 1.2rem 1.2rem;
+            border: 1.5px solid #bbb;
+            border-radius: 6px;
+            background: #fff;
+            color: #222;
+            margin-bottom: 0.5rem;
+            transition: border 0.2s;
+        }
+        #addProductForm textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        #addProductForm button[type="submit"] {
+            background: #1da03e;
+            color: #fff;
+            font-size: 2rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 6px;
+            padding: 1.2rem 2.5rem;
+            margin-top: 0.5rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            align-self: flex-end;
+        }
+        #addProductForm button[type="submit"]:hover {
+            background: #444;
+            transform: translateY(-2px) scale(1.03);
+        }
+        #productFormMsg {
+            font-size: 1.5rem;
+            min-height: 1.5em;
+            text-align: left;
+            margin-top: 0.5rem;
+            width: 100%;
+        }
+        @media (max-width: 1100px) {
+            #addProductForm {
+                flex-direction: column;
+                align-items: stretch;
+                max-width: 98vw;
+            }
+            #addProductForm .form-group {
+                min-width: 100%;
+                flex: 1 1 100%;
+            }
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .product-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-name {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .product-description {
+            font-size: 1.4rem;
+            color: #666;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-details {
+            font-size: 1.4rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1da03e;
+            margin: 1rem 0;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .edit-btn, .delete-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.4rem;
+            transition: background-color 0.2s;
+        }
+
+        .edit-btn {
+            background: #007bff;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background: #0056b3;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .edit-form {
+            display: none;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .edit-form.active {
+            display: block;
+        }
+
+        .edit-form input,
+        .edit-form textarea,
+        .edit-form select {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1.4rem;
+        }
+
+        .edit-form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            margin-top: 7rem;
+        }
+</style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div id="menu-btn" class="fas fa-bars"></div>
+
+        <a href="#" class="logo">PROBIDDER</a>
+
+        <nav class="navbar">
+            <a href="#home-h">home</a>
+            <a href="#My-Products"> My Products</a>
+            
+            <a href="#My-biddings"> My Biddings</a>
+        </nav>
+
+        <a href="#" id="login-link" class="btn"><img src="user.svg" alt="SVG Image" width="15" height="15"></a>
+
+
+
+    </header>
+
+    <!-- HOME -->
+    <section class="home-h main-section" id="home-h">
+        <div class="row-h">
+            <div class="cube-animation-container">
+                <div class="cube">
+                    <div class="face front"></div>
+                    <div class="face back"></div>
+                    <div class="face right"></div>
+                    <div class="face left"></div>
+                    <div class="face top"></div>
+                    <div class="face bottom"></div>
+                </div>
+            </div>
+            <div class="content-h">
+                <h3>Sell</h3>
+                <h3> Anything!</h3>
+                <h3 class="bid-text">Bid Anything!</h3>
+            </div>
+        </div>
+
+      <!-- Login Dialog -->
+        <div class="dialog-box" id="login-dialog">
+            <div>
+                <span class="close-btn" id="close-login-dialog">&times;</span>
+                <h2>Login</h2>
+                <form class="login-form" id="login-form">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required>
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                    <button type="submit">Submit</button>
+                </form>
+                <div id="error-message" style="color:red;"></div> <!-- For displaying error messages -->
+                <p>Don't have an account? <a href="#registration-dialog" id="register-link">Register here</a></p>
+                <p><a href="#reset-dialog" id="reset-link">Forgot password?</a></p>
+            </div>
+        </div>
+
+
+
+        <!-- Registration Dialog -->
+        <div class="unique-modal-dialog" style="display:none;">
+            <div class="unique-modal-content">
+                <span class="close-btn unique-close-btn">&times;</span> <!-- Updated class -->
+                <h2 class="unique-modal-title">Register</h2>
+                <form id="unique-registration-form">
+                    <label for="registration-dialog-username">Username</label>
+                    <input type="text" id="registration-dialog-username" name="registration-dialog-username" required>
+                    <span id="usernameError" style="color: red; font-size: 0.9em;"></span>
+                    
+                    <label for="registration-dialog-email">Email</label>
+                    <input type="email" id="registration-dialog-email" name="registration-dialog-email" required>
+                    <span id="emailError" style="color: red; font-size: 0.9em;"></span>
+                    
+                    <label for="registration-dialog-password">Password</label>
+                    <input type="password" id="registration-dialog-password" name="registration-dialog-password" required>
+                    <span id="passwordError" style="color: red; font-size: 0.9em;"></span>
+                    
+                    <label for="registration-dialog-confirm-password">Confirm Password</label>
+                    <input type="password" id="registration-dialog-confirm-password" name="registration-dialog-confirm-password" required>
+                    <span id="confirmPasswordError" style="color: red; font-size: 0.9em;"></span>
+                    
+                    <button type="submit" class="unique-register-btn">Register</button>
+                </form>
+            </div>
+        </div>
+
+
+
+        <!-- Logged In Dialog -->
+        <div class="logged-in-modal-dialog" style="display:none;">
+            <div class="logged-in-modal-content">
+                <span class="close-btn logged-in-close-btn">&times;</span> <!-- Close button -->
+                <p class="logged-in-text">Logged in as <span id="logged-in-username">Username</span></p>
+                <button class="logged-in-logout-btn">Logout</button>
+            </div>
+        </div>
+
+
+        <!-- Reset Password Dialog -->
+        <div class="reset-password-modal-dialog" style="display:none;">
+            <div class="reset-password-modal-content">
+                <span class="close-btn reset-password-close-btn">&times;</span> <!-- Updated class -->
+                <h2>Reset Password</h2>
+                <form>
+                    <label for="reset-password-username">Username</label>
+                    <input type="text" id="reset-password-username" required>
+
+                    <label for="reset-password-auth-code">Auth Code</label>
+                    <input type="text" id="reset-password-auth-code" required>
+
+                    <label for="reset-password-new">New Password</label>
+                    <input type="password" id="reset-password-new" required>
+
+                    <button type="submit" class="reset-password-btn">Reset Password</button>
+                </form>
+            </div>
+        </div>
+
+
+    </section>
+
+    <!-- ABOUT -->
+    <section class="My-Products main-section" id="My-Products">
+        <h2>Add New Product</h2>
+        <div class="form-container">
+            <form id="addProductForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="name">Product Name*</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description*</label>
+                    <textarea id="description" name="description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="starting_price">Starting Price*</label>
+                    <input type="number" id="starting_price" name="starting_price" min="0.01" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="image">Image*</label>
+                    <input type="file" id="image" name="image" accept="image/*" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category*</label>
+                    <input type="text" id="category" name="category" required>
+                </div>
+                <div class="form-group">
+                    <label for="start_time">Start Time*</label>
+                    <input type="datetime-local" id="start_time" name="start_time" required>
+                </div>
+                <div class="form-group">
+                    <label for="end_time">End Time*</label>
+                    <input type="datetime-local" id="end_time" name="end_time" required>
+                </div>
+                <div class="form-group">
+                    <label for="status">Status*</label>
+                    <select id="status" name="status" required>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="active">Active</option>
+                        <option value="ended">Ended</option>
+                    </select>
+                </div>
+                <button type="submit">Add Product</button>
+                <div id="productFormMsg"></div>
+            </form>
+        </div>
+
+        <h2 style="margin-top: 4rem;">My Products</h2>
+        <div id="productsList" class="products-grid"></div>
+    </section>
+
+   
+
+    <!-- BOOK -->
+    <section class="My-biddings main-section" id="My-biddings">
+        
+    </section>
+
+    <!-- FOOTER -->
+    <section class="footer">
+        <div class="box-container">
+            <div class="box">
+                <h3>Location</h3>
+                  <a href="https://www.google.com/maps"><i class="fas fa-arrow-right"></i> JHAMSIKHEL</a>
+            </div>
+
+            
+
+            <div class="box">
+                <h3>contact info</h3>
+                <a href="tel:+977-9841234567"><i class="fas fa-phone"></i> +977-9841234567</a>
+                <a href="tel: +977-9851234568"><i class="fas fa-phone"></i> +977-9851234568</a>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=thebatas2024@gmail.com&su=Hello&body=YOur%20Question%20?."><i class="fas fa-envelope"></i> thebatas2024@gmail.com</a>
+                
+            </div>
+
+            <div class="box">
+                <h3>contact info</h3>
+                <a href="https://www.facebok.com"><i class="fab fa-facebook-f"></i> facebook</a>
+                <a href="https://www.instagram.com"><i class="fab fa-instagram"></i> instagram</a>
+                
+            </div>
+        </div>
+
+        <div class="credit">created by <span>the GAGS</span> | all rights reserved</div>
+    </section>
+
+    <!-- SWIPER -->
+    <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+
+    <!-- Custom JS File Link  -->
+    <script src="js/script.js"></script>
+
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
+    </div>
+    <div id="open-today-notification" class="notification" style="display: none;">
+        We are open today!
+    </div>
+    
+<script>
+ // Handle login  
+
+                // Get dialog elements
+            const loginDialog = document.getElementById('login-dialog');
+                const registerDialog = document.querySelector('.unique-modal-dialog');
+                const resetDialog = document.querySelector('.reset-password-modal-dialog');
+                const loggedInDialog = document.querySelector('.logged-in-modal-dialog');
+                const loggedInUsernameDisplay = document.getElementById('logged-in-username');
+
+                // Get buttons and links
+                const loginLink = document.getElementById('login-link');
+                const closeLoginDialog = document.getElementById('close-login-dialog');
+                const registerLink = document.getElementById('register-link');
+                const resetLink = document.getElementById('reset-link');
+                const closeLoggedInDialog = document.querySelector('.logged-in-close-btn');
+
+                // Function to check login state
+            function checkLoginState() {
+                return sessionStorage.getItem('loggedIn') === 'true';
+                }
+
+                // Open login dialog if not logged in
+                loginLink.onclick = (e) => {
+                e.preventDefault(); // Prevent default anchor behavior
+                if (!checkLoginState()) {
+                    loginDialog.style.display = 'flex';
+                } else {
+                    showLoggedInDialog(sessionStorage.getItem('username'));
+                }
+                };
+
+                // Close login dialog
+                closeLoginDialog.onclick = () => {
+                loginDialog.style.display = 'none';
+                };
+
+                // Open registration dialog
+                registerLink.onclick = (e) => {
+                e.preventDefault(); // Prevent default anchor behavior
+                loginDialog.style.display = 'none'; // Close login dialog
+                registerDialog.style.display = 'flex'; // Open registration dialog
+                };
+
+                // Close registration dialog
+                document.querySelector('.unique-close-btn').onclick = () => {
+                registerDialog.style.display = 'none';
+                };
+
+                // Open reset password dialog
+                resetLink.onclick = (e) => {
+                e.preventDefault(); // Prevent default anchor behavior
+                loginDialog.style.display = 'none'; // Close login dialog
+                resetDialog.style.display = 'flex'; // Open reset password dialog
+                };
+
+                // Close reset password dialog
+                document.querySelector('.reset-password-close-btn').onclick = () => {
+                resetDialog.style.display = 'none';
+                };
+
+                // Close logged in dialog
+                closeLoggedInDialog.onclick = () => {
+                loggedInDialog.style.display = 'none';
+                };
+
+                // Close dialogs when clicking outside
+                window.onclick = (event) => {
+                if (event.target === loginDialog) {
+                    loginDialog.style.display = 'none';
+                } else if (event.target === registerDialog) {
+                    registerDialog.style.display = 'none';
+                } else if (event.target === resetDialog) {
+                    resetDialog.style.display = 'none';
+                } else if (event.target === loggedInDialog) {
+                    loggedInDialog.style.display = 'none';
+                }
+                };
+
+                // Function to show the logged-in dialog with the username
+                function showLoggedInDialog(username) {
+                // Set the username in the dialog
+                loggedInUsernameDisplay.textContent = `${username}`;
+                loggedInDialog.style.display = 'flex'; // Show the dialog
+                }
+
+                // Logout button functionality
+                document.querySelector('.logged-in-logout-btn').onclick = () => {
+                fetch('UserLogin.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({ logout: true })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        sessionStorage.removeItem('loggedIn'); // Remove logged in status
+                        sessionStorage.removeItem('username'); // Remove username
+                        loggedInDialog.style.display = 'none'; // Close logged-in dialog
+                        alert('You have logged out successfully.');
+                    }
+                })
+                .catch(error => console.error('Error during logout:', error));
+                };
+
+                // Login form submission handling
+                document.getElementById('login-form').onsubmit = (e) => {
+                e.preventDefault(); // Prevent the form from submitting
+
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                fetch('UserLogin.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        login: true,
+                        username: username,
+                        password: password
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        sessionStorage.setItem('loggedIn', 'true'); // Set logged in status
+                        sessionStorage.setItem('username', data.username); // Store username
+                        loginDialog.style.display = 'none'; // Close login dialog
+                        showLoggedInDialog(data.username); // Show the logged-in dialog with the username
+                    } else {
+                        document.getElementById('error-message').textContent = data.message;
+                    }
+                })
+                .catch(error => console.error('Error during login:', error));
+    };
+
+
+    // Handle registration
+    document.querySelector('.unique-register-btn').addEventListener('click', function (event) { 
+        event.preventDefault(); // Prevent default form submission
+
+        const username = document.getElementById('registration-dialog-username').value;
+        const email = document.getElementById('registration-dialog-email').value;
+        const password = document.getElementById('registration-dialog-password').value;
+        const confirmPassword = document.getElementById('registration-dialog-confirm-password').value;
+
+        // Clear any previous error messages
+        const clearError = (id) => {
+            const errorSpan = document.getElementById(id);
+            if (errorSpan) errorSpan.textContent = '';
+        };
+
+        clearError('usernameError');
+        clearError('emailError');
+        clearError('passwordError');
+        clearError('confirmPasswordError');
+
+        let isValid = true;
+
+        // Username Validation
+        const usernameRegex = /^[A-Za-z0-9]+$/;
+        if (!usernameRegex.test(username)) {
+            let usernameError = document.getElementById('usernameError');
+            if (!usernameError) {
+                usernameError = document.createElement('span');
+                usernameError.id = 'usernameError';
+                usernameError.style.color = 'red';
+                document.getElementById('registration-dialog-username').after(usernameError);
+            }
+            usernameError.textContent = 'Username must not contain special characters.';
+            isValid = false;
+        }
+
+        // Email Validation
+        const emailRegex = /^[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+        if (!emailRegex.test(email)) {
+            let emailError = document.getElementById('emailError');
+            if (!emailError) {
+                emailError = document.createElement('span');
+                emailError.id = 'emailError';
+                emailError.style.color = 'red';
+                document.getElementById('registration-dialog-email').after(emailError);
+            }
+            emailError.textContent = 'Please enter a valid email address.';
+            isValid = false;
+        }
+
+        // Password Validation
+        const passwordRegex = /^(?=.*[A-Za-z])[A-Za-z]{5,}$/
+    ;
+        if (!passwordRegex.test(password)) {
+            let passwordError = document.getElementById('passwordError');
+            if (!passwordError) {
+                passwordError = document.createElement('span');
+                passwordError.id = 'passwordError';
+                passwordError.style.color = 'red';
+                document.getElementById('registration-dialog-password').after(passwordError);
+            }
+            passwordError.textContent = 'Password must be at least 8 characters long, with one letter, one number, and one special character.';
+            isValid = false;
+        }
+
+        // Confirm Password Validation
+        if (password !== confirmPassword) {
+            let confirmPasswordError = document.getElementById('confirmPasswordError');
+            if (!confirmPasswordError) {
+                confirmPasswordError = document.createElement('span');
+                confirmPasswordError.id = 'confirmPasswordError';
+                confirmPasswordError.style.color = 'red';
+                document.getElementById('registration-dialog-confirm-password').after(confirmPasswordError);
+            }
+            confirmPasswordError.textContent = 'Passwords do not match.';
+            isValid = false;
+        }
+
+        // If validation fails, stop execution
+        if (!isValid) {
+            return;
+        }
+
+        // Proceed with the fetch request if all validations pass
+        fetch('UserLogin.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                register: true,
+                'registration-dialog-username': username,
+                'registration-dialog-email': email,
+                'registration-dialog-password': password
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Registration successful!');
+                    const registerDialog = document.querySelector('.unique-modal-dialog');
+                    registerDialog.style.display = 'none'; // Close registration dialog
+                } else {
+                    alert(data.message); // Display the error message
+                }
+            })
+            .catch(error => console.error('Error during registration:', error));
+    });
+    
+    // Open reset password dialog and send username
+
+        resetLink.onclick = (e) => {
+        e.preventDefault(); // Prevent default anchor behavior
+
+        // Get the username from the login dialog
+        const username = document.getElementById('username').value;
+
+        // Show loader before sending the request
+        showLoader(); // Show loader
+
+        // Send the username to the backend
+        fetch('PasswordReset.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+                body: new URLSearchParams({ requestReset: true, username: username }) // Include requestReset flag
+            })
+            .then(response => {
+                // Check if the response is OK (status in the range 200-299)
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                return response.json(); // Parse the response as JSON
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('Reset code has been sent to your email!'); // Alert for successful request
+                    resetDialog.style.display = 'flex'; // Open reset password dialog
+                } else {
+                    alert(data.message); // Alert the error message
+                }
+            })
+            .catch(error => {
+                console.error('Error sending username:', error);
+                alert('Could not send username. Please try again later.');
+            })
+            .finally(() => {
+                hideLoader(); // Hide loader after the process
+        });
+    };
+
+        // Reset password form submission handling (after the dialog is open)
+        document.querySelector('.reset-password-modal-content form').onsubmit = (e) => {
+                e.preventDefault(); // Prevent the form from submitting
+                showLoader(); // Show loader at the start of reset password process
+
+                const authCode = document.getElementById('reset-password-auth-code').value;
+                const newPassword = document.getElementById('reset-password-new').value;
+
+                fetch('PasswordReset.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        resetCode: authCode,
+                        newPassword: newPassword
+                    })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok: ' + response.statusText);
+                        }
+                        return response.text(); // Get the raw response text
+                    })
+                    .then(data => {
+                        // Try to parse the response as JSON
+                        try {
+                            const jsonData = JSON.parse(data);
+                            if (jsonData.success) {
+                                alert('Password reset successful!');
+                                resetDialog.style.display = 'none'; // Close reset dialog
+                            } else {
+                                alert(jsonData.message); // Alert the error message
+                            }
+                        } catch (error) {
+                            console.error('Error parsing JSON:', error);
+                            console.log('Raw response:', data); // Log the raw response for debugging
+                            alert('Unexpected response from the server.'); // Handle unexpected response
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error during password reset:', error);
+                        alert('Could not reset password. Please try again later.');
+                    })
+                    .finally(() => {
+                        hideLoader(); // Hide loader after the reset password process
+                    });
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        function showSection(id) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // Show home by default
+        showSection('home-h');
+
+        document.querySelectorAll('.navbar a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const sectionId = href.replace('#', '');
+                    showSection(sectionId);
+                    // Optionally update the URL hash:
+                    window.location.hash = sectionId;
+                }
+            });
+        });
+
+        // If there's a hash in the URL, show that section on load
+        if (window.location.hash) {
+            const sectionId = window.location.hash.replace('#', '');
+            if (document.getElementById(sectionId)) {
+                showSection(sectionId);
+            }
+        }
+    });
+
+    // Product Form Validation and AJAX
+    const addProductForm = document.getElementById('addProductForm');
+    if (addProductForm) {
+        addProductForm.onsubmit = async function(e) {
+            e.preventDefault();
+            const msg = document.getElementById('productFormMsg');
+            msg.textContent = '';
+            // Basic validation
+            const name = addProductForm.name.value.trim();
+            const description = addProductForm.description.value.trim();
+            const starting_price = parseFloat(addProductForm.starting_price.value);
+            const image = addProductForm.image.files[0];
+            const category = addProductForm.category.value.trim();
+            const start_time = addProductForm.start_time.value;
+            const end_time = addProductForm.end_time.value;
+            const status = addProductForm.status.value;
+            if (!name || !description || !category || !start_time || !end_time || !status || !image) {
+                msg.textContent = 'All fields are required.';
+                msg.style.color = 'red';
+                return;
+            }
+            if (starting_price <= 0) {
+                msg.textContent = 'Starting price must be greater than 0.';
+                msg.style.color = 'red';
+                return;
+            }
+            if (new Date(end_time) <= new Date(start_time)) {
+                msg.textContent = 'End time must be after start time.';
+                msg.style.color = 'red';
+                return;
+            }
+            // Prepare form data
+            const formData = new FormData(addProductForm);
+
+            // Add logged-in username
+            const addedBy = sessionStorage.getItem('username');
+            if (!addedBy) {
+                msg.textContent = 'You must be logged in to add a product.';
+                msg.style.color = 'red';
+                return;
+            }
+            formData.append('added_by', addedBy);
+
+            try {
+                const res = await fetch('add_products.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                let data;
+                const text = await res.text();
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    msg.textContent = 'Server error: ' + text;
+                    msg.style.color = 'red';
+                    return;
+                }
+
+                if (res.ok && data.success) {
+                    msg.textContent = 'Product added successfully!';
+                    msg.style.color = 'green';
+                    addProductForm.reset();
+                } else {
+                    msg.textContent = data.message || 'Failed to add product.';
+                    msg.style.color = 'red';
+                }
+            } catch (err) {
+                msg.textContent = 'Network/server error: ' + err;
+                msg.style.color = 'red';
+            }
+        };
+    }
+
+    // Function to load user's products
+    async function loadUserProducts() {
+        const username = sessionStorage.getItem('username');
+        if (!username) return;
+
+        try {
+            const formData = new FormData();
+            formData.append('username', username);
+
+            const res = await fetch('fetchproducts.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                displayProducts(data.products);
+            } else {
+                console.error('Failed to load products:', data.message);
+            }
+        } catch (err) {
+            console.error('Error loading products:', err);
+        }
+    }
+
+    // Function to display products
+    function displayProducts(products) {
+        const productsList = document.getElementById('productsList');
+        productsList.innerHTML = '';
+
+        products.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <img src="${product.image}" alt="${product.name}" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-description">${product.description}</p>
+                    <p class="product-details">Category: ${product.category}</p>
+                    <p class="product-details">End Time: ${new Date(product.end_time).toLocaleString()}</p>
+                    <p class="product-details">Status: ${product.status}</p>
+                    <p class="product-price">Current Price: $${product.current_price}</p>
+                    <div class="product-actions">
+                        <button class="edit-btn" onclick="showEditForm(${product.id})">Edit</button>
+                        <button class="delete-btn" onclick="deleteProduct(${product.id})">Delete</button>
+                    </div>
+                    <div class="edit-form" id="edit-form-${product.id}">
+                        <input type="text" id="edit-name-${product.id}" value="${product.name}" placeholder="Product Name">
+                        <textarea id="edit-description-${product.id}" placeholder="Description">${product.description}</textarea>
+                        <input type="text" id="edit-category-${product.id}" value="${product.category}" placeholder="Category">
+                        <input type="datetime-local" id="edit-end-time-${product.id}" value="${product.end_time.slice(0, 16)}">
+                        <select id="edit-status-${product.id}">
+                            <option value="upcoming" ${product.status === 'upcoming' ? 'selected' : ''}>Upcoming</option>
+                            <option value="active" ${product.status === 'active' ? 'selected' : ''}>Active</option>
+                            <option value="ended" ${product.status === 'ended' ? 'selected' : ''}>Ended</option>
+                        </select>
+                        <div class="image-preview">
+                            <img src="${product.image}" alt="Current image" style="max-width: 200px; margin: 10px 0;">
+                        </div>
+                        <input type="file" id="edit-image-${product.id}" accept="image/*">
+                        <button onclick="updateProduct(${product.id})">Save Changes</button>
+                    </div>
+                </div>
+            `;
+            productsList.appendChild(card);
+        });
+    }
+
+    // Function to show edit form
+    function showEditForm(productId) {
+        const editForm = document.getElementById(`edit-form-${productId}`);
+        editForm.classList.toggle('active');
+    }
+
+    // Function to update product
+    async function updateProduct(productId) {
+        const username = sessionStorage.getItem('username');
+        if (!username) return;
+
+        const formData = new FormData();
+        formData.append('action', 'update');
+        formData.append('product_id', productId);
+        formData.append('username', username);
+        formData.append('name', document.getElementById(`edit-name-${productId}`).value);
+        formData.append('description', document.getElementById(`edit-description-${productId}`).value);
+        formData.append('category', document.getElementById(`edit-category-${productId}`).value);
+        formData.append('end_time', document.getElementById(`edit-end-time-${productId}`).value);
+        formData.append('status', document.getElementById(`edit-status-${productId}`).value);
+
+        // Add image if a new one is selected
+        const imageFile = document.getElementById(`edit-image-${productId}`).files[0];
+        if (imageFile) {
+            formData.append('image', imageFile);
+        }
+
+        try {
+            const res = await fetch('updateproduct.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                alert('Product updated successfully');
+                loadUserProducts(); // Reload products
+            } else {
+                alert(data.message || 'Failed to update product');
+            }
+        } catch (err) {
+            console.error('Error updating product:', err);
+            alert('Error updating product');
+        }
+    }
+
+    // Function to delete product
+    async function deleteProduct(productId) {
+        if (!confirm('Are you sure you want to delete this product?')) return;
+
+        const username = sessionStorage.getItem('username');
+        if (!username) return;
+
+        const formData = new FormData();
+        formData.append('action', 'delete');
+        formData.append('product_id', productId);
+        formData.append('username', username);
+
+        try {
+            const res = await fetch('updateproduct.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                alert('Product deleted successfully');
+                loadUserProducts(); // Reload products
+            } else {
+                alert(data.message || 'Failed to delete product');
+            }
+        } catch (err) {
+            console.error('Error deleting product:', err);
+            alert('Error deleting product');
+        }
+    }
+
+    // Load products when the My Products section is shown
+    document.querySelector('a[href="#My-Products"]').addEventListener('click', loadUserProducts);
+
+    // Load products when the page loads if we're on the My Products section
+    if (window.location.hash === '#My-Products') {
+        loadUserProducts();
+    }
+</script>
+    
+    
+</body>
+
+</html>
