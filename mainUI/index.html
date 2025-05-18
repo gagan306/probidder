@@ -415,32 +415,33 @@
 
         /* Product Form Styles */
         #addProductForm {
-            border: none;
+        border: none;
             background: none;
             border-radius: 0;
             box-shadow: none;
             padding: 0;
-            margin: 4rem 0 2rem 0; /* top margin for header, no left/right auto */
+            margin: 4rem auto 2rem auto; /* Center the form and add vertical margin */
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
-            gap: 2rem;
-            align-items: flex-end;
-            justify-content: flex-start;
-            max-width: 100vw;
+            gap: 2rem; /* Space between flex items (form groups) */
+            align-items: flex-start; /* Align items to the top */
+            justify-content: center; /* Center the flex items if space allows */
+            max-width: 900px; /* Set a max width for better control on larger screens */
+            width: 100%; /* Ensure it takes full width up to max-width */
         }
         #addProductForm .form-group {
             display: flex;
             flex-direction: column;
-            min-width: 220px;
-            flex: 1 1 260px;
-            margin-bottom: 0;
+            min-width: 250px; /* Increase minimum width slightly */
+            flex: 1 1 300px; /* Allow flexing, base width 300px */
+            margin-bottom: 0; /* No margin below form groups */
         }
         #addProductForm label {
             font-size: 1.7rem;
             color: #222;
             font-weight: 600;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.5rem; /* Add slight margin below label */
         }
         #addProductForm input[type="text"],
         #addProductForm input[type="number"],
@@ -569,9 +570,9 @@
 
         .edit-btn, .delete-btn {
             padding: 0.8rem 1.5rem;
-            border: none;
+        border: none;
             border-radius: 4px;
-            cursor: pointer;
+        cursor: pointer;
             font-size: 1.4rem;
             transition: background-color 0.2s;
         }
@@ -905,7 +906,7 @@
                     <div class="face left"></div>
                     <div class="face top"></div>
                     <div class="face bottom"></div>
-                </div>
+            </div>
             </div>
             <div class="content-h">
                 <h3>Sell</h3>
@@ -928,6 +929,9 @@
         </div>
 
       <!-- Login Dialog -->
+       
+
+    </section>
         <div class="dialog-box" id="login-dialog">
             <div>
                 <span class="close-btn" id="close-login-dialog">&times;</span>
@@ -1006,9 +1010,6 @@
             </div>
         </div>
 
-
-    </section>
-
     <!-- ABOUT -->
     <section class="My-Products main-section" id="My-Products">
         <h2>Add New Product</h2>
@@ -1017,31 +1018,31 @@
                 <div class="form-group">
                     <label for="name">Product Name*</label>
                     <input type="text" id="name" name="name" required>
-                </div>
+            </div>
                 <div class="form-group">
                     <label for="description">Description*</label>
                     <textarea id="description" name="description" required></textarea>
-                </div>
+            </div>
                 <div class="form-group">
                     <label for="starting_price">Starting Price*</label>
                     <input type="number" id="starting_price" name="starting_price" min="0.01" step="0.01" required>
-                </div>
+        </div>
                 <div class="form-group">
                     <label for="image">Image*</label>
                     <input type="file" id="image" name="image" accept="image/*" required>
-                </div>
+            </div>
                 <div class="form-group">
                     <label for="category">Category*</label>
                     <input type="text" id="category" name="category" required>
-                </div>
+            </div>
                 <div class="form-group">
                     <label for="start_time">Start Time*</label>
                     <input type="datetime-local" id="start_time" name="start_time" required>
-                </div>
+            </div>
                 <div class="form-group">
                     <label for="end_time">End Time*</label>
                     <input type="datetime-local" id="end_time" name="end_time" required>
-                </div>
+            </div>
                 <div class="form-group">
                     <label for="status">Status*</label>
                     <select id="status" name="status" required>
@@ -1049,7 +1050,7 @@
                         <option value="active">Active</option>
                         <option value="ended">Ended</option>
                     </select>
-                </div>
+        </div>
                 <button type="submit">Add Product</button>
                 <div id="productFormMsg"></div>
             </form>
@@ -1071,7 +1072,7 @@
                 <span class="close-modal" id="closeKhaltiModal">&times;</span>
                 <h3>Pay with Khalti</h3>
                 <div id="khaltiPaymentContainer"></div>
-            </div>
+        </div>
         </div>
     </section>
 
@@ -1080,7 +1081,7 @@
         <div class="box-container">
             <div class="box">
                 <h3>Location</h3>
-                  <a href="https://www.google.com/maps"><i class="fas fa-arrow-right"></i> JHAMSIKHEL</a>
+                <a href="https://www.google.com/maps"><i class="fas fa-arrow-right"></i> JHAMSIKHEL</a>
             </div>
 
             
@@ -1508,18 +1509,18 @@
             if (!name || !description || !category || !start_time || !end_time || !status || !image) {
                 msg.textContent = 'All fields are required.';
                 msg.style.color = 'red';
-                return;
-            }
+                    return;
+                }
             if (starting_price <= 0) {
                 msg.textContent = 'Starting price must be greater than 0.';
                 msg.style.color = 'red';
-                return;
-            }
+        return;
+    }
             if (new Date(end_time) <= new Date(start_time)) {
                 msg.textContent = 'End time must be after start time.';
                 msg.style.color = 'red';
-                return;
-            }
+                        return;
+                    }
             // Prepare form data
             const formData = new FormData(addProductForm);
 
@@ -1528,8 +1529,8 @@
             if (!addedBy) {
                 msg.textContent = 'You must be logged in to add a product.';
                 msg.style.color = 'red';
-                return;
-            }
+                                return;
+                            }
             formData.append('added_by', addedBy);
 
             try {
@@ -1580,7 +1581,7 @@
             const data = await res.json();
             if (data.success) {
                 displayProducts(data.products);
-            } else {
+        } else {
                 console.error('Failed to load products:', data.message);
             }
         } catch (err) {
@@ -1683,7 +1684,7 @@
 
         try {
             const res = await fetch('updateproduct.php', {
-                method: 'POST',
+            method: 'POST',
                 body: formData
             });
 
@@ -1889,8 +1890,8 @@
         const bidAmount = bidAmountInput.value;
         if (!bidAmount || parseFloat(bidAmount) <= 0) {
             alert('Please enter a valid bid amount');
-            return;
-        }
+                return;
+            }
 
         // Add check if bid amount is higher than current price (frontend feedback)
         const currentPriceElement = productDetailContent ? productDetailContent.querySelector(`#detail-price-${productId}`) : null;
