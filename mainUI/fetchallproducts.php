@@ -7,14 +7,26 @@ if ($mysqli->connect_errno) {
     exit;
 }
 
-// Fetch all active products
-$stmt = $mysqli->prepare("
-    SELECT p.*, u.username as seller_name 
+// --- Added: Update product status based on end time before fetching ---
+$update_sql = "UPDATE products SET status = 'ended' WHERE status = 'active' AND end_time <= NOW()";
+$mysqli->query($update_sql);
+// Note: Errors during this update are deliberately not checked here to avoid stopping the page load.
+// Proper error logging for this update should ideally happen in the dedicated background task script.
+
+// Fetch all active products (now including those just marked as ended)
+$stmt = $mysqli->prepare("SELECT p.*, u.username as seller_name 
     FROM products p 
     JOIN users u ON p.added_by = u.id 
-    WHERE p.status IN ('upcoming', 'active') 
-    ORDER BY p.end_time ASC
-");
+    WHERE p.status IN ('upcoming', 'active', 'ended') -- Fetch ended ones too, as they might have just updated
+    ORDER BY p.end_time ASC");
+
+if ($stmt === false) {
+     // Log error if prepare failed
+     // error_log('Prepare failed for fetchallproducts query: ' . $mysqli->error);
+     echo json_encode(['success' => false, 'message' => 'Failed to prepare product fetch query.']);
+     exit();
+}
+
 $stmt->execute();
 $result = $stmt->get_result();
 
