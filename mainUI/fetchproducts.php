@@ -26,9 +26,22 @@ if (!$stmt->fetch()) {
 }
 $stmt->close();
 
-// Fetch user's products
-$stmt = $mysqli->prepare("SELECT id, name, description, starting_price, current_price, category, end_time, status, image FROM products WHERE added_by = ? ORDER BY end_time DESC");
-$stmt->bind_param("i", $user_id);
+// Fetch products added by the user
+// Also check payment status and highest bidder info if the product is ended (sold)
+$query = "
+    SELECT p.*, 
+           pa.payment_status AS payment_status,
+           (SELECT u.username FROM bids AS b JOIN users u ON b.user_id = u.id WHERE b.product_id = p.id ORDER BY b.amount DESC, b.bid_time ASC LIMIT 1) AS highest_bidder_username
+    FROM products p
+    LEFT JOIN bids b_highest ON b_highest.product_id = p.id AND b_highest.amount = p.current_price -- Join for payment status only on the highest bid
+    LEFT JOIN payments pa ON pa.bid_id = b_highest.id
+    WHERE p.added_by = ? 
+    GROUP BY p.id -- Group to avoid multiple rows if multiple bids exist
+    ORDER BY p.end_time DESC
+";
+
+$stmt = $mysqli->prepare($query);
+$stmt->bind_param('i', $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -42,6 +55,7 @@ while ($row = $result->fetch_assoc()) {
 }
 
 echo json_encode(['success' => true, 'products' => $products]);
+
 $stmt->close();
 $mysqli->close();
 ?> 

@@ -504,6 +504,10 @@
             padding: 2rem 0;
         }
 
+        #myBiddingsList {
+            margin-top: 7rem; /* Add margin to the top of the biddings list */
+        }
+
         .product-card {
             background: #fff;
             border-radius: 8px;
@@ -625,6 +629,247 @@
             margin-bottom: 2rem;
             margin-top: 7rem;
         }
+
+        .products-section {
+            padding: 4rem 2rem;
+        }
+
+        .products-section h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 3rem;
+            color: var(--main-color);
+        }
+
+        .product-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-name {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .product-description {
+            font-size: 1.4rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .price-label {
+            font-size: 1.4rem;
+            color: #666;
+        }
+
+        .price-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #1da03e;
+        }
+
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.3rem;
+            color: #666;
+            margin-top: 1rem;
+        }
+
+        .product-status {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #e3fcef;
+            color: #1da03e;
+        }
+
+        .status-upcoming {
+            background: #fff4e5;
+            color: #ff9800;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            background: #fff;
+            margin: 5% auto;
+            padding: 2rem;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 12px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 2rem;
+            top: 1rem;
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        #productDetailContent {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .detail-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .detail-info {
+            padding: 1rem;
+        }
+
+        .detail-name {
+            font-size: 2.4rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .detail-description {
+            font-size: 1.6rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .detail-prices {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .detail-price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .detail-price-label {
+            font-size: 1.4rem;
+            color: #666;
+        }
+
+        .detail-price-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #1da03e;
+        }
+
+        .bid-section {
+            margin-top: 2rem;
+        }
+
+        .bid-input {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .bid-input input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1.6rem;
+        }
+
+        .bid-button {
+            background: #1da03e;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.6rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .bid-button:hover {
+            background: #168a33;
+        }
+
+        .bid-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            #productDetailContent {
+                grid-template-columns: 1fr;
+            }
+            
+            .detail-image {
+                height: 300px;
+            }
+            
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+            }
+        }
 </style>
 </head>
 
@@ -666,6 +911,19 @@
                 <h3>Sell</h3>
                 <h3> Anything!</h3>
                 <h3 class="bid-text">Bid Anything!</h3>
+            </div>
+        </div>
+
+        <div class="products-section">
+            <h2>Active Auctions</h2>
+            <div id="activeProducts" class="products-grid"></div>
+        </div>
+
+        <!-- Product Detail Modal -->
+        <div id="productDetailModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <div id="productDetailContent"></div>
             </div>
         </div>
 
@@ -805,7 +1063,16 @@
 
     <!-- BOOK -->
     <section class="My-biddings main-section" id="My-biddings">
-        
+        <h2>My Biddings</h2>
+        <div id="myBiddingsList" class="products-grid"></div>
+        <!-- Khalti Payment Modal -->
+        <div id="khaltiModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" id="closeKhaltiModal">&times;</span>
+                <h3>Pay with Khalti</h3>
+                <div id="khaltiPaymentContainer"></div>
+            </div>
+        </div>
     </section>
 
     <!-- FOOTER -->
@@ -1329,15 +1596,24 @@
         products.forEach(product => {
             const card = document.createElement('div');
             card.className = 'product-card';
-            card.innerHTML = `
-                <img src="${product.image}" alt="${product.name}" class="product-image">
-                <div class="product-info">
-                    <h3 class="product-name">${product.name}</h3>
-                    <p class="product-description">${product.description}</p>
-                    <p class="product-details">Category: ${product.category}</p>
-                    <p class="product-details">End Time: ${new Date(product.end_time).toLocaleString()}</p>
-                    <p class="product-details">Status: ${product.status}</p>
-                    <p class="product-price">Current Price: $${product.current_price}</p>
+
+            let productActionsHtml = '';
+            let soldStatusHtml = '';
+
+            if (product.status === 'ended') {
+                // Product is sold
+                soldStatusHtml = `<p class="product-details" style="color:green; font-weight: bold;">Sold for $${product.current_price}</p>`;
+                 if (product.highest_bidder_username) {
+                     soldStatusHtml += `<p class="product-details" style="font-weight: bold;">To: ${product.highest_bidder_username}</p>`;
+                 }
+                if (product.payment_status === 'completed') {
+                    soldStatusHtml += `<p class="product-details" style="color:green; font-weight: bold;">Payment Received</p>`;
+                } else {
+                     soldStatusHtml += `<p class="product-details" style="color:orange; font-weight: bold;">Payment Pending</p>`;
+                }
+            } else {
+                // Product is active or upcoming - show edit/delete options
+                 productActionsHtml = `
                     <div class="product-actions">
                         <button class="edit-btn" onclick="showEditForm(${product.id})">Edit</button>
                         <button class="delete-btn" onclick="deleteProduct(${product.id})">Delete</button>
@@ -1350,7 +1626,7 @@
                         <select id="edit-status-${product.id}">
                             <option value="upcoming" ${product.status === 'upcoming' ? 'selected' : ''}>Upcoming</option>
                             <option value="active" ${product.status === 'active' ? 'selected' : ''}>Active</option>
-                            <option value="ended" ${product.status === 'ended' ? 'selected' : ''}>Ended</option>
+                             <!-- 'ended' option removed for products you own once ended -->
                         </select>
                         <div class="image-preview">
                             <img src="${product.image}" alt="Current image" style="max-width: 200px; margin: 10px 0;">
@@ -1358,6 +1634,20 @@
                         <input type="file" id="edit-image-${product.id}" accept="image/*">
                         <button onclick="updateProduct(${product.id})">Save Changes</button>
                     </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <img src="${product.image}" alt="${product.name}" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-description">${product.description}</p>
+                    <p class="product-details">Category: ${product.category}</p>
+                    <p class="product-details">End Time: ${new Date(product.end_time).toLocaleString()}</p>
+                    <p class="product-details">Status: ${product.status}</p>
+                    <p class="product-price">Current Price: $${product.current_price}</p>
+                    ${soldStatusHtml} <!-- Show sold status if applicable -->
+                    ${productActionsHtml} <!-- Show edit/delete or nothing if sold -->
                 </div>
             `;
             productsList.appendChild(card);
@@ -1447,6 +1737,396 @@
     // Load products when the page loads if we're on the My Products section
     if (window.location.hash === '#My-Products') {
         loadUserProducts();
+    }
+
+    // Function to load all active products
+    async function loadActiveProducts() {
+        try {
+            const res = await fetch('fetchallproducts.php');
+            const data = await res.json();
+            if (data.success) {
+                displayActiveProducts(data.products);
+            }
+        } catch (err) {
+            console.error('Error loading products:', err);
+        }
+    }
+
+    // Function to display active products
+    function displayActiveProducts(products) {
+        const productsContainer = document.getElementById('activeProducts');
+        productsContainer.innerHTML = '';
+
+        products.forEach(product => {
+            // Only display active or upcoming products on the home page
+            if (product.status !== 'active' && product.status !== 'upcoming') {
+                return; // Skip ended products on home page
+            }
+
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            // Only show detail and allow bid if auction is active or upcoming
+            if (product.status === 'active' || product.status === 'upcoming') {
+                 card.onclick = () => showProductDetail(product);
+            }
+
+            const timeLeft = getTimeLeft(product.end_time);
+            const statusClass = product.status === 'active' ? 'status-active' : (product.status === 'upcoming' ? 'status-upcoming' : 'status-ended');
+            const statusText = product.status === 'ended' ? 'Auction Ended' : product.status;
+
+            card.innerHTML = `
+                <img src="${product.image}" alt="${product.name}" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-description">${product.description}</p>
+                    <div class="product-price">
+                        <span class="price-label">Current Price:</span>
+                        <span class="price-value" id="price-${product.id}">$${product.current_price}</span>
+                    </div>
+                    <div class="product-meta">
+                        <span class="product-status ${statusClass}">${statusText}</span>
+                        <span class="time-left">${timeLeft}</span>
+                    </div>
+                            </div>
+                        `;
+            productsContainer.appendChild(card);
+        });
+    }
+
+    // Function to show product detail
+    function showProductDetail(product) {
+        // --- Frontend Validation: Prevent showing modal or bidding if auction has ended by time ---
+        const now = new Date();
+        const endTime = new Date(product.end_time);
+
+        if (endTime < now) {
+            alert('Cannot view details or bid: Auction has ended.');
+            return;
+        }
+
+        // Also check based on status as a fallback (status updated by background task)
+        if (product.status === 'ended') {
+             alert('Cannot view details or bid: Auction has ended.');
+             return;
+        }
+
+        const modal = document.getElementById('productDetailModal');
+        const content = document.getElementById('productDetailContent');
+        
+        content.innerHTML = `
+            <img src="${product.image}" alt="${product.name}" class="detail-image">
+            <div class="detail-info">
+                <h2 class="detail-name">${product.name}</h2>
+                <p class="detail-description">${product.description}</p>
+                <div class="detail-prices">
+                    <div class="detail-price-row">
+                        <span class="detail-price-label">Starting Price:</span>
+                        <span class="detail-price-value">$${product.starting_price}</span>
+                    </div>
+                    <div class="detail-price-row">
+                        <span class="detail-price-label">Current Price:</span>
+                        <span class="detail-price-value" id="detail-price-${product.id}">$${product.current_price}</span>
+                    </div>
+                </div>
+                <div class="bid-section">
+                    <div class="bid-input">
+                        <input type="number" id="bidAmount-${product.id}" min="${parseFloat(product.current_price) + 0.01}" step="0.01" placeholder="Enter bid amount">
+                        <button class="bid-button" onclick="placeBid(${product.id})">Place Bid</button>
+                    </div>
+                    <p class="time-left">Time Left: ${getTimeLeft(product.end_time)}</p>
+                </div>
+            </div>
+        `;
+        
+        modal.style.display = 'block';
+    }
+
+    // Function to get time left
+    function getTimeLeft(endTime) {
+        const end = new Date(endTime);
+        const now = new Date();
+        const diff = end - now;
+        
+        if (diff <= 0) return 'Auction Ended';
+        
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        
+        return `${days}d ${hours}h ${minutes}m`;
+    }
+
+    // Function to place bid
+    async function placeBid(productId) {
+        // --- Frontend Validation: Prevent bidding if auction has ended by time ---
+        // Get the end time from the currently displayed modal content
+        const productDetailContent = document.getElementById('productDetailContent');
+         if (productDetailContent) {
+            // We need the product object or at least its end_time here.
+            // The product object is not directly accessible in placeBid just from productId.
+            // The most reliable frontend check is based on the end_time value that was used to render the modal.
+            // However, reading the time string from the HTML element is prone to errors.
+            // Let's rely on the check done in showProductDetail and the backend check.
+
+            // The previous check based on textContent 'Ended' is unreliable if the background task hasn't run.
+            // Let's remove it and strictly rely on the end_time check in showProductDetail and the backend.
+
+             // Removed previous textContent check here
+         }
+
+        const username = sessionStorage.getItem('username');
+        if (!username) {
+            alert('Please login to place a bid');
+            return;
+        }
+
+        const bidAmountInput = document.getElementById(`bidAmount-${productId}`);
+         if (!bidAmountInput) {
+             alert('Bid input not found.');
+             return;
+         }
+
+        const bidAmount = bidAmountInput.value;
+        if (!bidAmount || parseFloat(bidAmount) <= 0) {
+            alert('Please enter a valid bid amount');
+            return;
+        }
+
+        // Add check if bid amount is higher than current price (frontend feedback)
+        const currentPriceElement = productDetailContent ? productDetailContent.querySelector(`#detail-price-${productId}`) : null;
+        let currentPrice = 0;
+        if (currentPriceElement) {
+            currentPrice = parseFloat(currentPriceElement.textContent.replace('$', ''));
+        }
+
+        if (parseFloat(bidAmount) <= currentPrice) {
+             alert('Bid must be higher than current price.');
+             return;
+        }
+
+
+        try {
+            const formData = new FormData();
+            formData.append('product_id', productId);
+            formData.append('username', username);
+            formData.append('amount', bidAmount);
+
+            const res = await fetch('placebid.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                alert('Bid placed successfully!');
+                // Update price on the page after successful bid
+                 updateProductPrice(productId, bidAmount);
+                // Optionally close modal or update modal price
+                 const modal = document.getElementById('productDetailModal');
+                 if (modal) modal.style.display = 'none';
+
+            } else {
+                alert(data.message || 'Failed to place bid');
+            }
+        } catch (err) {
+            console.error('Error placing bid:', err);
+            alert('Error placing bid');
+        }
+    }
+
+    // Function to update product price
+    function updateProductPrice(productId, newPrice) {
+        const priceElement = document.getElementById(`price-${productId}`);
+        const detailPriceElement = document.getElementById(`detail-price-${productId}`);
+        if (priceElement) priceElement.textContent = `$${newPrice}`;
+        if (detailPriceElement) detailPriceElement.textContent = `$${newPrice}`;
+    }
+
+    // Close modal when clicking the close button or outside the modal
+    document.querySelector('.close-modal').onclick = function() {
+        document.getElementById('productDetailModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('productDetailModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // Load products when home section is shown
+    document.querySelector('a[href="#home-h"]').addEventListener('click', loadActiveProducts);
+
+    // Load products when the page loads if we're on the home section
+    if (window.location.hash === '#home-h' || !window.location.hash) {
+        loadActiveProducts();
+    }
+
+    // Update prices every 30 seconds
+    setInterval(loadActiveProducts, 30000);
+
+    // My Biddings Section
+    async function loadMyBiddings() {
+        const username = sessionStorage.getItem('username');
+        if (!username) return;
+        const formData = new FormData();
+        formData.append('username', username);
+        try {
+            const res = await fetch('fetch_user_biddings.php', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.success) {
+                displayMyBiddings(data.biddings);
+            }
+        } catch (err) {
+            console.error('Error loading biddings:', err);
+        }
+    }
+
+    function displayMyBiddings(biddings) {
+        const container = document.getElementById('myBiddingsList');
+        container.innerHTML = '';
+
+        if (!biddings || biddings.length === 0) {
+            container.innerHTML = '<p style="font-size:1.6rem;">You have not placed any bids yet.</p>';
+            return;
+        }
+
+        biddings.forEach(bid => {
+            // Create the card element for each bidding
+            const card = document.createElement('div');
+            card.className = 'product-card';
+
+            let statusText = '';
+            let statusColor = '';
+            let paymentBtn = '';
+            let paymentStatus = '';
+
+            // Determine status text and color
+            if (bid.product_status === 'active') {
+                statusText = (bid.highest_bidder === sessionStorage.getItem('username')) ? 'You are winning' : 'You are not winning';
+                statusColor = (bid.highest_bidder === sessionStorage.getItem('username')) ? 'green' : 'red';
+            } else if (bid.product_status === 'ended') { // <-- Checks if status is 'ended'
+                if (bid.is_winner) { // <-- Checks if the user won (highest bidder)
+                    statusText = 'You won!';
+                    statusColor = 'green';
+                    if (bid.payment_status === 'completed') { // <-- Checks if payment is completed
+                        paymentStatus = '<span style="color:green;font-weight:600;">Payment Completed</span>';
+                    } else { // <-- If status is ended, user won, and payment not completed, show button
+                         paymentBtn = `<button class="btn" onclick="openKhaltiPayment(${bid.user_highest_bid_id},${bid.product_id},${bid.highest_bid})">Pay with Khalti</button>`;
+                    }
+                } else {
+                    statusText = 'You did not win';
+                    statusColor = 'red';
+                }
+            } else { // For 'upcoming' or other statuses if they appear here
+                 statusText = bid.product_status;
+                 statusColor = '#666'; // Grey or neutral color
+            }
+
+            let allBidsHtml = '';
+            if (bid.bids && bid.bids.length) {
+                allBidsHtml = '<div style="margin-top:1rem;"><strong>All Bids:</strong><ul style="font-size:1.3rem; list-style: none; padding: 0;">' +
+                    bid.bids.map(b => `<li>${b.username}: $${b.amount} <span style='color:${b.username===sessionStorage.getItem('username')?'#1da03e':'#333'};'>${b.username===sessionStorage.getItem('username')?'(You)':''}</span></li>`).join('') +
+                    '</ul></div>';
+            }
+
+            // Use user's highest bid amount and time for display on their bidding card
+            card.innerHTML = `
+                <img src="${bid.image}" alt="${bid.product_name}" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-name">${bid.product_name}</h3>
+                    <p class="product-details">Your Highest Bid: $${bid.user_highest_bid_amount} <br> Bid Time: ${new Date(bid.user_highest_bid_time).toLocaleString()}</p>
+                    <p class="product-details">Auction Ends: ${new Date(bid.end_time).toLocaleString()}</p>
+                    <p class="product-details">Highest Bid: $${bid.highest_bid} by ${bid.highest_bidder}</p>
+                    <p class="product-details" style="color:${statusColor};font-weight:600;">${statusText}</p>
+                    ${allBidsHtml} <!-- Use the correctly named variable -->
+                    ${paymentBtn}
+                    ${paymentStatus}
+                </div>
+            `;
+
+            // Append the created card element to the container
+            container.appendChild(card);
+        });
+    }
+
+    // Khalti Payment Integration
+    let khaltiBidId = null, khaltiProductId = null, khaltiAmount = null;
+    function openKhaltiPayment(bid_id, product_id, amount) {
+        khaltiBidId = bid_id;
+        khaltiProductId = product_id;
+        khaltiAmount = amount;
+        document.getElementById('khaltiModal').style.display = 'block';
+        // Khalti config
+        var config = {
+            "publicKey": "test_public_key_dc74b7b3e6e84e1e8e7e7e7e7e7e7e7e", // Replace with your Khalti public key
+            "productIdentity": product_id.toString(),
+            "productName": "Auction Product",
+            "productUrl": window.location.href,
+            "eventHandler": {
+                onSuccess (payload) {
+                    // Record payment in backend
+                    recordKhaltiPayment(payload);
+                },
+                onError (error) {
+                    alert('Khalti payment error: ' + JSON.stringify(error));
+                },
+                onClose () {
+                    // Modal closed
+                }
+            }
+        };
+        var checkout = new KhaltiCheckout(config);
+        document.getElementById('khaltiPaymentContainer').innerHTML = '<button class="btn" id="khaltiPayBtn">Pay Rs. '+(khaltiAmount*130)+'</button>';
+        document.getElementById('khaltiPayBtn').onclick = function() {
+            checkout.show({amount: khaltiAmount*100*130}); // Khalti expects paisa, and $1~Rs.130
+        };
+    }
+
+    document.getElementById('closeKhaltiModal').onclick = function() {
+        document.getElementById('khaltiModal').style.display = 'none';
+    };
+
+    async function recordKhaltiPayment(payload) {
+        const username = sessionStorage.getItem('username');
+        // Get user_id from backend
+        const formData = new FormData();
+        formData.append('username', username);
+        const userRes = await fetch('fetch_user_biddings.php', { method: 'POST', body: formData });
+        const userData = await userRes.json();
+        let user_id = null;
+        if (userData.success && userData.biddings.length) {
+            user_id = userData.biddings[0].bids.find(b => b.username === username) ? userData.biddings[0].bids.find(b => b.username === username).user_id : null;
+        }
+        if (!user_id) {
+            alert('Could not verify user for payment.');
+            return;
+        }
+        const payForm = new FormData();
+        payForm.append('bid_id', khaltiBidId);
+        payForm.append('user_id', user_id);
+        payForm.append('product_id', khaltiProductId);
+        payForm.append('amount', khaltiAmount);
+        payForm.append('khalti_token', payload.token);
+        const res = await fetch('record_payment.php', { method: 'POST', body: payForm });
+        const data = await res.json();
+        if (data.success) {
+            alert('Payment successful!');
+            document.getElementById('khaltiModal').style.display = 'none';
+            loadMyBiddings();
+        } else {
+            alert('Payment failed: ' + data.message);
+        }
+    }
+
+    // Load biddings when My Biddings section is shown
+    const myBiddingsNav = document.querySelector('a[href="#My-biddings"]');
+    if (myBiddingsNav) {
+        myBiddingsNav.addEventListener('click', loadMyBiddings);
+    }
+    // Load biddings if on My Biddings section on page load
+    if (window.location.hash === '#My-biddings') {
+        loadMyBiddings();
     }
 </script>
     

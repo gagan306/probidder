@@ -7,79 +7,125 @@ if ($mysqli->connect_errno) {
     exit;
 }
 
-// Handle DELETE request
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
-    $product_id = $_POST['product_id'] ?? 0;
-    $username = $_POST['username'] ?? '';
+$action = $_POST['action'] ?? '';
+$product_id = $_POST['product_id'] ?? 0;
+$username = $_POST['username'] ?? '';
 
-    if (empty($username) || empty($product_id)) {
-        echo json_encode(['success' => false, 'message' => 'Missing required fields']);
-        exit;
-    }
-
-    // Verify product belongs to user
-    $stmt = $mysqli->prepare("SELECT p.id FROM products p JOIN users u ON p.added_by = u.id WHERE p.id = ? AND u.username = ?");
-    $stmt->bind_param("is", $product_id, $username);
-    $stmt->execute();
-    if (!$stmt->get_result()->fetch_assoc()) {
-        echo json_encode(['success' => false, 'message' => 'Product not found or unauthorized']);
-        exit;
-    }
-
-    // Delete product
-    $stmt = $mysqli->prepare("DELETE FROM products WHERE id = ?");
-    $stmt->bind_param("i", $product_id);
-    if ($stmt->execute()) {
-        echo json_encode(['success' => true, 'message' => 'Product deleted successfully']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to delete product']);
-    }
+if (empty($action) || empty($product_id) || empty($username)) {
+    echo json_encode(['success' => false, 'message' => 'Missing required data']);
     exit;
 }
 
-// Handle UPDATE request
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update') {
-    $product_id = $_POST['product_id'] ?? 0;
-    $username = $_POST['username'] ?? '';
+// Get user ID
+$stmt = $mysqli->prepare("SELECT id FROM users WHERE username = ?");
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$stmt->bind_result($user_id);
+if (!$stmt->fetch()) {
+    echo json_encode(['success' => false, 'message' => 'User not found']);
+    exit;
+}
+$stmt->close();
+
+// --- Check if product exists and is owned by the user ---
+$stmt = $mysqli->prepare("SELECT status FROM products WHERE id = ? AND added_by = ?");
+$stmt->bind_param("ii", $product_id, $user_id);
+$stmt->execute();
+$stmt->bind_result($product_status);
+
+if (!$stmt->fetch()) {
+    echo json_encode(['success' => false, 'message' => 'Product not found or you do not own this product']);
+    exit;
+}
+$stmt->close();
+
+// --- CORE FIX: Prevent updates or deletion if auction has ended ---
+if ($product_status === 'ended') {
+    echo json_encode(['success' => false, 'message' => 'Cannot modify an auction that has ended.']);
+    exit;
+}
+
+// --- Handle Update Action ---
+if ($action === 'update') {
     $name = $_POST['name'] ?? '';
     $description = $_POST['description'] ?? '';
     $category = $_POST['category'] ?? '';
     $end_time = $_POST['end_time'] ?? '';
     $status = $_POST['status'] ?? '';
 
-    if (empty($username) || empty($product_id)) {
-        echo json_encode(['success' => false, 'message' => 'Missing required fields']);
+    // Basic validation
+    if (empty($name) || empty($description) || empty($category) || empty($end_time) || empty($status)) {
+        echo json_encode(['success' => false, 'message' => 'Missing update fields']);
         exit;
     }
 
-    // Verify product belongs to user
-    $stmt = $mysqli->prepare("SELECT p.id FROM products p JOIN users u ON p.added_by = u.id WHERE p.id = ? AND u.username = ?");
-    $stmt->bind_param("is", $product_id, $username);
-    $stmt->execute();
-    if (!$stmt->get_result()->fetch_assoc()) {
-        echo json_encode(['success' => false, 'message' => 'Product not found or unauthorized']);
-        exit;
-    }
+    // Prepare update query
+    $query = "UPDATE products SET name = ?, description = ?, category = ?, end_time = ?, status = ?";
+    $params = ['sssss', $name, $description, $category, $end_time, $status];
 
-    // Check if new image is uploaded
+    // Handle image update
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $imageData = file_get_contents($_FILES['image']['tmp_name']);
-        // Update product with new image
-        $stmt = $mysqli->prepare("UPDATE products SET name = ?, description = ?, category = ?, end_time = ?, status = ?, image = ? WHERE id = ?");
-        $stmt->bind_param("ssssssi", $name, $description, $category, $end_time, $status, $imageData, $product_id);
-    } else {
-        // Update product without changing image
-        $stmt = $mysqli->prepare("UPDATE products SET name = ?, description = ?, category = ?, end_time = ?, status = ? WHERE id = ?");
-        $stmt->bind_param("sssssi", $name, $description, $category, $end_time, $status, $product_id);
+        $image_data = file_get_contents($_FILES['image']['tmp_name']);
+        $query .= ", image = ?";
+        $params[0] .= 'b'; // Add blob type
+        $params[] = $image_data;
     }
+
+    $query .= " WHERE id = ? AND added_by = ?";
+    $params[0] .= 'ii'; // Add integer types for WHERE clause
+    $params[] = $product_id;
+    $params[] = $user_id;
+
+    $stmt = $mysqli->prepare($query);
+    if ($stmt === false) {
+         echo json_encode(['success' => false, 'message' => 'Prepare failed: ' . $mysqli->error]);
+         exit();
+    }
+
+    // Bind parameters dynamically
+    call_user_func_array([$stmt, 'bind_param'], refValues($params));
 
     if ($stmt->execute()) {
         echo json_encode(['success' => true, 'message' => 'Product updated successfully']);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to update product']);
+        echo json_encode(['success' => false, 'message' => 'Failed to update product: ' . $stmt->error]);
     }
-    exit;
+    $stmt->close();
+
+} elseif ($action === 'delete') {
+    // --- Handle Delete Action ---
+    $stmt = $mysqli->prepare("DELETE FROM products WHERE id = ? AND added_by = ?");
+    if ($stmt === false) {
+         echo json_encode(['success' => false, 'message' => 'Prepare failed: ' . $mysqli->error]);
+         exit();
+    }
+    $stmt->bind_param("ii", $product_id, $user_id);
+    if ($stmt->execute()) {
+        if ($mysqli->affected_rows > 0) {
+            echo json_encode(['success' => true, 'message' => 'Product deleted successfully']);
+        } else {
+             echo json_encode(['success' => false, 'message' => 'Product not found or already deleted']);
+        }
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to delete product: ' . $stmt->error]);
+    }
+    $stmt->close();
+
+} else {
+    echo json_encode(['success' => false, 'message' => 'Invalid action']);
 }
 
-echo json_encode(['success' => false, 'message' => 'Invalid request']);
+$mysqli->close();
+
+// Helper function for dynamic bind_param
+function refValues($arr){
+    if (strnatcmp(phpversion(),'5.3') >= 0) //Reference is required for PHP 5.3+ for call_user_func_array
+    {
+        $refs = array();
+        foreach($arr as $key => $value)
+            $refs[$key] = & $arr[$key];
+        return $refs;
+    }
+    return $arr;
+}
 ?> 
