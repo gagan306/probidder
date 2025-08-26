@@ -410,6 +410,8 @@
             }
         }
 
+        /* (Removed Khalti styles) */
+
         .main-section { display: none; }
         .main-section.active { display: block; }
 
@@ -1066,14 +1068,7 @@
     <section class="My-biddings main-section" id="My-biddings">
         <h2>My Biddings</h2>
         <div id="myBiddingsList" class="products-grid"></div>
-        <!-- Khalti Payment Modal -->
-        <div id="khaltiModal" class="modal">
-            <div class="modal-content">
-                <span class="close-modal" id="closeKhaltiModal">&times;</span>
-                <h3>Pay with Khalti</h3>
-                <div id="khaltiPaymentContainer"></div>
-        </div>
-        </div>
+        <!-- (Removed Khalti modal) -->
     </section>
 
     <!-- FOOTER -->
@@ -1107,6 +1102,8 @@
 
     <!-- SWIPER -->
     <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+
+    <!-- (Removed Khalti Checkout Script) -->
 
     <!-- Custom JS File Link  -->
     <script src="js/script.js"></script>
@@ -2012,8 +2009,8 @@
                     statusColor = 'green';
                     if (bid.payment_status === 'completed') { // <-- Checks if payment is completed
                         paymentStatus = '<span style="color:green;font-weight:600;">Payment Completed</span>';
-                    } else { // <-- If status is ended, user won, and payment not completed, show button
-                         paymentBtn = `<button class="btn" onclick="openKhaltiPayment(${bid.user_highest_bid_id},${bid.product_id},${bid.highest_bid})">Pay with Khalti</button>`;
+                    } else { // If ended, user won, and payment not completed, show PayPal button
+                         paymentBtn = `<button class=\"btn\" onclick=\"setPaymentDetails(${bid.user_highest_bid_id},${bid.product_id},${bid.highest_bid});document.getElementById('paypalForm').submit();\">Pay with PayPal</button>`;
                     }
                 } else {
                     statusText = 'You did not win';
@@ -2051,74 +2048,7 @@
         });
     }
 
-    // Khalti Payment Integration
-    let khaltiBidId = null, khaltiProductId = null, khaltiAmount = null;
-    function openKhaltiPayment(bid_id, product_id, amount) {
-        khaltiBidId = bid_id;
-        khaltiProductId = product_id;
-        khaltiAmount = amount;
-        document.getElementById('khaltiModal').style.display = 'block';
-        // Khalti config
-        var config = {
-            "publicKey": "a700a5564d73415aa2b830083c1100aa", // Replace with your Khalti public key
-            "productIdentity": product_id.toString(),
-            "productName": "Auction Product",
-            "productUrl": window.location.href,
-            "eventHandler": {
-                onSuccess (payload) {
-                    // Record payment in backend
-                    recordKhaltiPayment(payload);
-                },
-                onError (error) {
-                    alert('Khalti payment error: ' + JSON.stringify(error));
-                },
-                onClose () {
-                    // Modal closed
-                }
-            }
-        };
-        var checkout = new KhaltiCheckout(config);
-        document.getElementById('khaltiPaymentContainer').innerHTML = '<button class="btn" id="khaltiPayBtn">Pay Rs. '+(khaltiAmount*130)+'</button>';
-        document.getElementById('khaltiPayBtn').onclick = function() {
-            checkout.show({amount: khaltiAmount*100*130}); // Khalti expects paisa, and $1~Rs.130
-        };
-    }
-
-    document.getElementById('closeKhaltiModal').onclick = function() {
-        document.getElementById('khaltiModal').style.display = 'none';
-    };
-
-    async function recordKhaltiPayment(payload) {
-        const username = sessionStorage.getItem('username');
-        // Get user_id from backend
-        const formData = new FormData();
-        formData.append('username', username);
-        const userRes = await fetch('fetch_user_biddings.php', { method: 'POST', body: formData });
-        const userData = await userRes.json();
-        let user_id = null;
-        if (userData.success && userData.biddings.length) {
-            user_id = userData.biddings[0].bids.find(b => b.username === username) ? userData.biddings[0].bids.find(b => b.username === username).user_id : null;
-        }
-        if (!user_id) {
-            alert('Could not verify user for payment.');
-            return;
-        }
-        const payForm = new FormData();
-        payForm.append('bid_id', khaltiBidId);
-        payForm.append('user_id', user_id);
-        payForm.append('product_id', khaltiProductId);
-        payForm.append('amount', khaltiAmount);
-        payForm.append('khalti_token', payload.token);
-        const res = await fetch('record_payment.php', { method: 'POST', body: payForm });
-        const data = await res.json();
-        if (data.success) {
-            alert('Payment successful!');
-            document.getElementById('khaltiModal').style.display = 'none';
-            loadMyBiddings();
-        } else {
-            alert('Payment failed: ' + data.message);
-        }
-    }
+    // (Removed Khalti Integration JS)
 
     // Load biddings when My Biddings section is shown
     const myBiddingsNav = document.querySelector('a[href="#My-biddings"]');
@@ -2131,6 +2061,74 @@
     }
 </script>
     
+    <!-- Payment Forms and Triggers -->
+    <form id="paypalForm" action="paypal_create.php" method="post" style="display:none;">
+        <input type="hidden" name="bid_id" id="paypal_bid_id" value="0">
+        <input type="hidden" name="product_id" id="paypal_product_id" value="0">
+        <input type="hidden" name="amount" id="paypal_amount" value="0">
+        <input type="hidden" name="currency" id="paypal_currency" value="USD">
+    </form>
+
+    <!-- PayPal JS SDK Button Integration -->
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&buyer-country=US&currency=USD&components=buttons" data-sdk-integration-source="developer-studio"></script>
+    <div id="paypal-button-container" style="display:flex;justify-content:center;margin:1.5rem 0;"></div>
+
+    <script>
+    // Helper: set details from your UI
+    function setPaymentDetails(bidId, productId, amountDecimal) {
+        document.getElementById('paypal_bid_id').value = bidId;
+        document.getElementById('paypal_product_id').value = productId;
+        document.getElementById('paypal_amount').value = amountDecimal;
+    }
+
+    // Render PayPal Buttons using server-side create/capture
+    if (window.paypal && paypal.Buttons) {
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                const form = new FormData();
+                form.append('sdk', '1');
+                form.append('bid_id', document.getElementById('paypal_bid_id').value);
+                form.append('product_id', document.getElementById('paypal_product_id').value);
+                form.append('amount', document.getElementById('paypal_amount').value);
+                form.append('currency', document.getElementById('paypal_currency').value);
+                return fetch('paypal_create.php', { method: 'POST', body: form })
+                    .then(res => res.json())
+                    .then(data => data.id);
+            },
+            onApprove: function(data, actions) {
+                const form = new FormData();
+                form.append('orderID', data.orderID);
+                return fetch('paypal_capture.php', { method: 'POST', body: form })
+                    .then(res => res.json())
+                    .then(() => {
+                        window.location.href = 'index.html?payment=success';
+                    })
+                    .catch(() => {
+                        window.location.href = 'index.html?payment=failed';
+                    });
+            }
+        }).render('#paypal-button-container');
+    }
+    </script>
+    
+    <script>
+    (function(){
+        var url = new URL(window.location.href);
+        var status = url.searchParams.get('payment');
+        if (!status) return;
+        var msg = '';
+        if (status === 'success') msg = 'Payment successful!';
+        if (status === 'failed' || status === 'cancel') msg = 'Payment was not completed.';
+        if (!msg) return;
+        try { alert(msg); } catch(e) {}
+        // Remove the query param so it doesn't show again on refresh
+        url.searchParams.delete('payment');
+        var cleaned = url.pathname + (url.searchParams.toString() ? ('?' + url.searchParams.toString()) : '') + url.hash;
+        if (window.history && history.replaceState) {
+            history.replaceState(null, '', cleaned);
+        }
+    })();
+    </script>
     
 </body>
 
